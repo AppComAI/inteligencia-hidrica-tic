@@ -98,16 +98,17 @@ dd{margin:0}
 .art a{color:var(--accent);font-weight:600}
 .credit{flex:1 0 100%;font-size:11px;color:#17202b;text-shadow:0 0 3px rgba(255,255,255,.85);margin-top:2px;letter-spacing:.01em}
 body{padding-bottom:150px!important}
-.sev{position:fixed;right:16px;bottom:16px;z-index:80;display:flex;align-items:flex-end;gap:8px;text-decoration:none;color:var(--fg)}
-.sev canvas{display:block;width:96px;height:112px;border-radius:48px 48px 16px 16px;background:radial-gradient(circle at 50% 38%,#eaf1fc,#b8cdef);border:2px solid var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.22);transition:transform .2s}
+.sev{position:fixed;right:16px;bottom:24px;z-index:80;display:flex;align-items:flex-end;gap:8px;text-decoration:none;color:var(--fg)}
+.sev canvas{display:block;width:92px;height:150px;background:transparent;filter:drop-shadow(0 3px 4px rgba(0,0,0,.28)) drop-shadow(0 0 1px rgba(0,0,0,.35));transition:transform .2s}
 .sev:hover canvas,.sev:focus-visible canvas{transform:translateY(-3px)}
-.sev:focus-visible{outline:none}.sev:focus-visible canvas{outline:3px solid var(--accent);outline-offset:3px}
-.sevn{position:absolute;right:0;bottom:-2px;width:96px;text-align:center;font-size:11px;font-weight:600;color:#fff;background:var(--accent);border-radius:0 0 14px 14px;padding:1px 0}
-.sevb{max-width:230px;background:var(--surface);border:1px solid var(--line);border-radius:12px 12px 2px 12px;padding:9px 12px;font-size:13px;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.15);margin-bottom:30px;transition:opacity .3s,transform .3s}
+.sev:focus-visible{outline:none}.sev:focus-visible canvas{outline:2px dashed var(--accent);outline-offset:2px;border-radius:8px}
+.sevn{position:absolute;right:0;bottom:-15px;width:92px;text-align:center;pointer-events:none}
+.sevn::before{content:'Severino';display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 8px;line-height:16px;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.sevb{max-width:230px;background:var(--surface);border:1px solid var(--line);border-radius:12px 12px 2px 12px;padding:9px 12px;font-size:13px;line-height:1.4;box-shadow:0 6px 20px rgba(0,0,0,.15);margin-bottom:70px;transition:opacity .3s,transform .3s}
 .sevb b{display:block;color:var(--accent);margin-bottom:2px}.sevb small{display:block;color:var(--muted);font-size:11.5px;margin-top:4px}
 .sev.quiet .sevb{opacity:0;transform:translateY(6px);pointer-events:none}
 .sev.quiet:hover .sevb,.sev.quiet:focus-visible .sevb{opacity:1;transform:none}
-@media (max-width:640px){.sev{right:10px;bottom:10px}.sev canvas{width:68px;height:80px;border-radius:34px 34px 12px 12px}.sevn{width:68px;font-size:10px}.sevb{display:none}}
+@media (max-width:640px){.sev{right:8px;bottom:18px}.sev canvas{width:62px;height:102px}.sevn{width:62px}.sevn::before{font-size:9.5px;padding:0 6px;line-height:14px}.sevb{display:none}}
 .foot{font-size:13px;color:var(--muted);max-width:90ch;margin:0}
 /* ajuda */
 .modal{position:fixed;inset:0;z-index:100;background:rgba(10,16,24,.55);display:flex;align-items:flex-start;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px 16px;overflow:auto}
@@ -374,7 +375,7 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
   </div>
 </div>
 
-<a class="sev" id="sev" href="https://chatgpt.com/g/g-p-6aea206ad4288191b9919455b174388c-ciclo-da-inteligencia-hidrica/project" target="_blank" rel="noopener" aria-label="Severino, assistente virtual do Ciclo da Inteligência Hídrica no ChatGPT. Abre em nova aba e requer login no ChatGPT."><span class="sevb"><b>Oi, eu sou o Severino!</b>Tire dúvidas sobre o framework e o artigo comigo.<small>Abre no ChatGPT · requer login</small></span><canvas id="sevc" aria-hidden="true"></canvas><span class="sevn">Severino</span></a>
+<a class="sev" id="sev" href="https://chatgpt.com/g/g-p-6aea206ad4288191b9919455b174388c-ciclo-da-inteligencia-hidrica/project" target="_blank" rel="noopener" aria-label="Severino, assistente virtual do Ciclo da Inteligência Hídrica no ChatGPT. Abre em nova aba e requer login no ChatGPT."><span class="sevb"><b>Oi, eu sou o Severino!</b>Tire dúvidas sobre o framework e o artigo comigo.<small>Abre no ChatGPT · requer login</small></span><canvas id="sevc" aria-hidden="true"></canvas><span class="sevn" aria-hidden="true"></span></a>
 <div class="modal" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpt">
   <div class="mbox">
     <div class="mhead"><h2 id="helpt">Ajuda</h2><button type="button" id="hclose">Fechar</button></div>
@@ -908,7 +909,7 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
     var r2; try{ r2=new T.WebGLRenderer({canvas:cv,antialias:true,alpha:true}); }catch(e){ return; }
     r2.outputEncoding=T.sRGBEncoding; r2.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); r2.setClearColor(0x000000,0);
     var sc2=new T.Scene(); sc2.add(new T.HemisphereLight(0xffffff,0x6b7a5a,0.75)); var s2=new T.DirectionalLight(0xffffff,0.7); s2.position.set(3,6,8); sc2.add(s2);
-    var cam2=new T.PerspectiveCamera(32,1,0.1,50); cam2.position.set(0,2.05,3.6); cam2.lookAt(0,1.75,0);
+    var cam2=new T.PerspectiveCamera(30,1,0.1,50); cam2.position.set(0,1.85,6.9); cam2.lookAt(0,1.12,0);
     var SV=makeOperator(); SV.g.rotation.y=-0.25; sc2.add(SV.g);
     // fone com microfone (marca de assistente)
     var hs=new T.MeshLambertMaterial({color:0x222831}), mic=new T.MeshLambertMaterial({color:0x2f6fd0});
@@ -916,7 +917,7 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
     var cup2=cup.clone(); cup2.position.x=-.27; SV.head.add(cup2);
     var boom=new T.Mesh(new T.CylinderGeometry(.012,.012,.26,8),hs); boom.rotation.set(0,0,0); boom.rotation.x=Math.PI/2; boom.rotation.y=0.55; boom.position.set(.2,-.08,.12); SV.head.add(boom);
     var mb=new T.Mesh(new T.SphereGeometry(.035,10,8),mic); mb.position.set(.1,-.09,.24); SV.head.add(mb);
-    function size(){ var w=cv.clientWidth||96, h=cv.clientHeight||112; r2.setSize(w,h,false); cam2.aspect=w/h; cam2.updateProjectionMatrix(); }
+    function size(){ var w=cv.clientWidth||92, h=cv.clientHeight||150; r2.setSize(w,h,false); cam2.aspect=w/h; cam2.updateProjectionMatrix(); }
     size(); window.addEventListener('resize',size);
     var c2=new T.Clock(), t2=0, hov=false; var a=$('sev');
     a.addEventListener('mouseenter',function(){ hov=true; }); a.addEventListener('mouseleave',function(){ hov=false; });
