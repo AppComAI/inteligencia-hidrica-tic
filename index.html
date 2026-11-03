@@ -166,6 +166,11 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
 .rfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
 .dlg .rlink{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font-size:inherit}
 
+.zoomctl{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:4}
+.zoomctl button{min-width:34px;height:32px;padding:0 8px;font-size:16px;font-weight:600;line-height:1;background:rgba(255,255,255,.92);color:#17202b;border:1px solid var(--line);border-radius:6px;cursor:pointer}
+.zoomctl .zauto{font-size:10.5px;letter-spacing:.04em}
+.zoomctl .zauto[aria-pressed="false"]{opacity:.55;text-decoration:line-through}
+.dlg:not([hidden]) ~ .zoomctl{display:none}
 .gtools button{min-width:34px;height:32px;padding:0 8px!important;font-weight:600;line-height:1;padding:5px 10px;font-size:13px;background:rgba(255,255,255,.92);color:#17202b}
 .obj{position:absolute;left:8px;bottom:8px;max-width:calc(100% - 120px);background:rgba(255,255,255,.93);color:#17202b;border-radius:8px;padding:8px 10px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .obj button{padding:5px 10px;font-size:13px}
@@ -249,6 +254,7 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
           <div class="obj" id="obj" hidden></div>
           <div class="gtools"><button type="button" id="grules" title="Regras do jogo" aria-label="Regras do jogo">?</button><button type="button" id="gsound" aria-pressed="true" title="Desligar o som" aria-label="Som">🔊</button><button type="button" id="gfull" title="Ampliar" aria-label="Ampliar">⛶</button></div>
           <div class="dlg center" id="dlg"></div>
+          <div class="zoomctl" aria-label="Zoom da câmera"><button type="button" id="zin" title="Aproximar" aria-label="Aproximar">+</button><button type="button" id="zout" title="Afastar" aria-label="Afastar">−</button><button type="button" id="zmap" title="Ver o mapa todo" aria-label="Ver o mapa todo">⤢</button><button type="button" id="zauto" class="zauto" aria-pressed="true" title="Zoom automático ao chegar nas estações: ligado">AUTO</button></div>
         </div>
       </section>
     </div>
@@ -290,6 +296,7 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
           <li><b>Andar:</b> clique (ou toque) no chão, ou use o botão <kbd>Ir até lá</kbd>, que leva você direto à próxima estação.</li>
           <li><b>Estação ativa:</b> marcada por um farol azul e uma seta amarela. Ao chegar perto, o diálogo abre sozinho.</li>
           <li><b>Fora de ordem:</b> clicar em outra estação mostra um aviso, porque as fases seguem a sequência do framework.</li>
+          <li><b>Zoom:</b> <kbd>+</kbd> aproxima, <kbd>−</kbd> afasta e <kbd>⤢</kbd> volta ao mapa todo. Em tela cheia (ou segurando <kbd>Ctrl</kbd>), a rodinha do mouse também dá zoom. <kbd>AUTO</kbd> liga ou desliga a aproximação automática quando você chega a uma estação.</li>
           <li><kbd>⛶</kbd> abre o jogo em tela cheia; <kbd>Esc</kbd> ou <kbd>✕</kbd> volta.</li>
           <li><kbd>🔊</kbd> liga ou desliga o áudio: trilha, efeitos e o operador cantarolando enquanto anda. O som começa depois do Start game e pausa quando o jogo sai da tela.</li>
           <li><kbd>?</kbd> abre estas regras a qualquer momento, sem perder o progresso.</li>
@@ -922,13 +929,14 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
   var toastEl=null,toastT=null;
   function toast(t){ if(!toastEl){ toastEl=document.createElement('div'); toastEl.style.cssText='position:absolute;left:50%;top:70px;transform:translateX(-50%);background:rgba(23,32,43,.92);color:#fff;padding:6px 12px;border-radius:16px;font-size:13px;pointer-events:none;z-index:3;white-space:nowrap'; gbox.appendChild(toastEl);} toastEl.textContent=t; toastEl.hidden=false; SFX.blip(); clearTimeout(toastT); toastT=setTimeout(function(){toastEl.hidden=true},2200); }
   function finishMission(){
+    CAM.boost=0;
     G.phase++; setHud();
     if(G.phase>=4){ endCycle(); return; }
     G.mode='explore'; closePanel(); placeBeam(G.phase); showObj();
   }
   function openMission(){
     if(G.mode!=='explore') return;
-    G.mode='dialog'; objEl.hidden=true; G.target=null; SFX.arrive();
+    G.mode='dialog'; objEl.hidden=true; G.target=null; if(!G._arr) SFX.arrive(); G._arr=false;
     [m1,m2,m3,m4][G.phase]();
   }
   function cont(label,fn){ return chs([[label,fn]]); }
@@ -1022,6 +1030,7 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
       panel(npc('Diretoria',e.txt)+'<div class="res">A decisão volta para a Fase 1 e muda o ponto de partida do próximo ciclo.</div>'+cont('Seguir',finishMission)); }]; })));
   }
   function endCycle(){
+    CAM.boost=0;
     G.mode='dialog'; beam.visible=arrow.visible=false; objEl.hidden=true;
     var s=G.snap, last=(G.cycle>=2); setTimeout(function(){ SFX.fanfare(last); },350);
     function dv(a,b){ var d=b-a; return (d>0?'+':'')+d; }
@@ -1049,6 +1058,20 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
     if(ray.ray.intersectPlane(plane,hitp)) walkTo(hitp.x,hitp.z,false);
   });
 
+  /* ---- câmera com zoom: manual (+/−, rodinha) e automático ao chegar nas estações ---- */
+  var CAM={z:0,user:0,auto:true,boost:0,a:new T.Vector3(),b:new T.Vector3(),la:new T.Vector3(),lb:new T.Vector3(),
+    update:function(dt){ var tg=Math.max(this.user,this.auto?this.boost:0); this.z+=(tg-this.z)*Math.min(1,dt*2.4);
+      var px=player.position.x, pz=player.position.z, k=this.z, e=k*k*(3-2*k);
+      this.a.set(16+px*0.25,19,17+pz*0.25); this.b.set(px+5.2,6.4,pz+6.6);
+      this.la.set(px*0.3,0,pz*0.3-1); this.lb.set(px+0.4,1.0,pz+0.5);
+      camera.position.lerpVectors(this.a,this.b,e); this.la.lerp(this.lb,e); camera.lookAt(this.la); } };
+  function zset(v){ CAM.user=Math.max(0,Math.min(1,Math.round(v*4)/4)); }
+  $('zin').addEventListener('click',function(){ zset(CAM.user+0.25); });
+  $('zout').addEventListener('click',function(){ zset(CAM.user-0.25); });
+  $('zmap').addEventListener('click',function(){ zset(0); });
+  $('zauto').addEventListener('click',function(){ CAM.auto=!CAM.auto; this.setAttribute('aria-pressed',CAM.auto?'true':'false'); this.title='Zoom automático ao chegar nas estações: '+(CAM.auto?'ligado':'desligado'); try{ localStorage.setItem('ciclo_zauto',CAM.auto?'1':'0'); }catch(e){} });
+  try{ if(localStorage.getItem('ciclo_zauto')==='0'){ CAM.auto=false; $('zauto').setAttribute('aria-pressed','false'); $('zauto').title='Zoom automático ao chegar nas estações: desligado'; } }catch(e){}
+  gbox.addEventListener('wheel',function(e){ if(!(gbox.classList.contains('full')||e.ctrlKey)) return; e.preventDefault(); CAM.user=Math.max(0,Math.min(1,CAM.user+(e.deltaY<0?0.12:-0.12))); },{passive:false});
   var clock=new T.Clock(), visible=true, tt=0;
   if(window.IntersectionObserver) new IntersectionObserver(function(en){ visible=en[0].isIntersecting; }).observe(gbox);
   function loop(){
@@ -1064,7 +1087,9 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
     }
     var moving=!!G.target; OP.update(dt,moving,tt,!moving&&G.mode==='explore',1.65); SFX.walkVoice(moving);
     // missão
-    if(G.mode==='explore'){ var s=STN[G.phase], ddx=s.x-player.position.x, ddz=s.z-player.position.z; if(ddx*ddx+ddz*ddz<3.6*3.6){ G.target=null; openMission(); } }
+    if(G.mode==='explore'){ var s=STN[G.phase], ddx=s.x-player.position.x, ddz=s.z-player.position.z; if(ddx*ddx+ddz*ddz<3.6*3.6){ G.target=null;
+      if(CAM.auto){ G.mode='arriving'; G.arrT=1.1; CAM.boost=1; objEl.hidden=true; player.rotation.y=Math.atan2(ddx,ddz); SFX.arrive(); G._arr=true; } else openMission(); } }
+    if(G.mode==='arriving'){ G.arrT-=dt; if(G.arrT<=0){ G.mode='explore'; openMission(); } }
     // visuais
     G.lakeS+=(G.lakeGoal-G.lakeS)*Math.min(1,dt*2); var R=6.5*G.lakeS; lake.scale.set(R,1,R);
     arrow.position.y=9+Math.sin(tt*3)*0.35; beam.rotation.y+=dt;
@@ -1074,7 +1099,7 @@ kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-wi
     clouds.forEach(function(c,i){ c.position.x+=dt*(0.4+i*0.1); if(c.position.x>28) c.position.x=-28; });
     if(rain.visible){ var p=rgeo.attributes.position.array; for(var i=0;i<RN;i++){ p[i*3+1]-=dt*14; if(p[i*3+1]<0) p[i*3+1]=16; } rgeo.attributes.position.needsUpdate=true; }
     // câmera
-    var cpx=player.position.x*0.85, cpz=player.position.z*0.85; camera.position.set(cpx+7.5,10.5,cpz+9.5); camera.lookAt(cpx+1.4,0.4,cpz+1.8);
+    CAM.update(dt);
     renderer.render(scene,camera);
   }
   intro(); loop();
