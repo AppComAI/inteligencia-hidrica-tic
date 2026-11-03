@@ -269,6 +269,48 @@ details p{margin:6px 0 2px;color:var(--muted)}
 .hud .m i b{display:block;height:100%;background:#2f6fd0;width:50%;transition:width .5s}
 .hud .m.low i b{background:#b3261e}
 .gtools{position:absolute;right:8px;top:8px;display:flex;gap:6px;z-index:5}
+.rmodal{position:fixed;inset:0;z-index:120;background:rgba(10,16,24,.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:16px;animation:rfade .18s ease}
+.rbox{width:min(720px,100%);max-height:min(680px,calc(100vh - 32px));display:flex;flex-direction:column;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden;animation:rpop .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes rfade{from{opacity:0}to{opacity:1}} @keyframes rpop{from{transform:translateY(12px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.rmodal,.rbox{animation:none}}
+.rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 20px 10px}
+.rkick{font:500 12px var(--font-mono);color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.rhead h2{font-size:22px;margin:2px 0 0}
+.rx{border:0;background:transparent;font-size:18px;line-height:1;padding:8px 10px;border-radius:8px;color:var(--muted)}
+.rx:hover{background:var(--accent-soft);color:var(--fg)}
+.rtabs{display:flex;gap:6px;padding:3px 20px 12px;align-items:center;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line)}
+.rtabs::-webkit-scrollbar{display:none}
+.rtabs button{flex:0 0 auto;border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.rtabs button[aria-selected=&quot;true&quot;]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.rbody{padding:16px 20px;overflow:auto;flex:1;font-size:14.5px}
+.rpane p{margin:0 0 12px}
+.rlead{font-size:15.5px}
+.rnote{font-size:13px;color:var(--muted)}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:0 0 14px}
+.rcard{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);display:flex;flex-direction:column;gap:3px}
+.rcard span{font-size:13px;color:var(--muted)}
+.rcard.rank b{color:var(--accent)}
+.rlist{margin:0;padding-left:1.1em}.rlist li{margin:0 0 9px}
+kbd{font:500 12px var(--font-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--bg);white-space:nowrap}
+.rstep{display:flex;gap:12px;margin:0 0 14px}
+.rstep p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.rn{flex:0 0 28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600}
+.rtw{overflow-x:auto;margin:0 0 12px}
+.rtab{border-collapse:collapse;width:100%;font-size:13.5px;min-width:440px}
+.rtab th,.rtab td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+.rtab td:first-child{white-space:nowrap}
+.rfoot .rbtn{white-space:nowrap}
+.rtab td:last-child,.rtab th:last-child{text-align:right;white-space:nowrap;font-family:var(--font-mono)}
+.rauth{font-size:13px;color:var(--muted)}
+.rmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:0 0 14px}
+.rmap div{border-left:3px solid var(--accent);padding:4px 10px;display:flex;flex-direction:column}
+.rmap span{font-size:13px;color:var(--muted)}
+.rcta{display:flex;gap:8px;flex-wrap:wrap}
+.rbtn{display:inline-block;text-decoration:none;font-size:14px;padding:9px 16px;border-radius:8px;border:1px solid var(--line);color:var(--fg);background:var(--surface);cursor:pointer}
+.rbtn.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.rfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.dlg .rlink{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font-size:inherit}
+
 .gtools button{padding:5px 10px;font-size:13px;background:rgba(255,255,255,.92);color:#17202b}
 .obj{position:absolute;left:8px;bottom:8px;max-width:calc(100% - 120px);background:rgba(255,255,255,.93);color:#17202b;border-radius:8px;padding:8px 10px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .obj button{padding:5px 10px;font-size:13px}
@@ -349,7 +391,7 @@ details p{margin:6px 0 2px;color:var(--muted)}
           &lt;canvas id=&quot;gl&quot;&gt;&lt;/canvas&gt;
           &lt;div class=&quot;hud&quot; id=&quot;hud&quot; hidden&gt;&lt;/div&gt;
           &lt;div class=&quot;obj&quot; id=&quot;obj&quot; hidden&gt;&lt;/div&gt;
-          &lt;div class=&quot;gtools&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;gsound&quot; aria-pressed=&quot;true&quot;&gt;🔊 Som&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;gfull&quot;&gt;Ampliar&lt;/button&gt;&lt;/div&gt;
+          &lt;div class=&quot;gtools&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;grules&quot;&gt;❔ Regras&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;gsound&quot; aria-pressed=&quot;true&quot;&gt;🔊 Som&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;gfull&quot;&gt;Ampliar&lt;/button&gt;&lt;/div&gt;
           &lt;div class=&quot;dlg center&quot; id=&quot;dlg&quot;&gt;&lt;/div&gt;
         &lt;/div&gt;
       &lt;/section&gt;
@@ -357,6 +399,104 @@ details p{margin:6px 0 2px;color:var(--muted)}
   &lt;/div&gt;
 
   &lt;p class=&quot;foot&quot;&gt;Obs.: dados emulados, simulação educativa.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;rmodal&quot; id=&quot;rules&quot; hidden role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-labelledby=&quot;rulest&quot;&gt;
+  &lt;div class=&quot;rbox&quot;&gt;
+    &lt;div class=&quot;rhead&quot;&gt;
+      &lt;div&gt;&lt;span class=&quot;rkick&quot;&gt;Missão no reservatório&lt;/span&gt;&lt;h2 id=&quot;rulest&quot;&gt;Regras do jogo&lt;/h2&gt;&lt;/div&gt;
+      &lt;button type=&quot;button&quot; class=&quot;rx&quot; id=&quot;rclose&quot; aria-label=&quot;Fechar regras&quot;&gt;✕&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;nav class=&quot;rtabs&quot; role=&quot;tablist&quot; aria-label=&quot;Seções das regras&quot;&gt;
+      &lt;button type=&quot;button&quot; role=&quot;tab&quot; data-t=&quot;r1&quot; aria-selected=&quot;true&quot;&gt;Visão geral&lt;/button&gt;
+      &lt;button type=&quot;button&quot; role=&quot;tab&quot; data-t=&quot;r2&quot;&gt;Controles&lt;/button&gt;
+      &lt;button type=&quot;button&quot; role=&quot;tab&quot; data-t=&quot;r3&quot;&gt;Estações&lt;/button&gt;
+      &lt;button type=&quot;button&quot; role=&quot;tab&quot; data-t=&quot;r4&quot;&gt;Ciclos&lt;/button&gt;
+      &lt;button type=&quot;button&quot; role=&quot;tab&quot; data-t=&quot;r5&quot;&gt;Pontuação&lt;/button&gt;
+      &lt;button type=&quot;button&quot; role=&quot;tab&quot; data-t=&quot;r6&quot;&gt;Dicas&lt;/button&gt;
+      &lt;button type=&quot;button&quot; role=&quot;tab&quot; data-t=&quot;r7&quot;&gt;O artigo&lt;/button&gt;
+    &lt;/nav&gt;
+    &lt;div class=&quot;rbody&quot;&gt;
+      &lt;section class=&quot;rpane&quot; id=&quot;r1&quot; role=&quot;tabpanel&quot;&gt;
+        &lt;p class=&quot;rlead&quot;&gt;Você é o operador de um sistema hídrico. Sua missão é levar o reservatório por &lt;b&gt;três crises&lt;/b&gt; passando pelas &lt;b&gt;quatro fases&lt;/b&gt; do framework de apoio à decisão, na ordem certa.&lt;/p&gt;
+        &lt;div class=&quot;rgrid&quot;&gt;
+          &lt;div class=&quot;rcard&quot;&gt;&lt;b&gt;3 ciclos&lt;/b&gt;&lt;span&gt;Seca severa → Alerta de segurança → Cheia&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;rcard&quot;&gt;&lt;b&gt;4 estações&lt;/b&gt;&lt;span&gt;Normas → Sensores → Modelos → Controle&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;rcard&quot;&gt;&lt;b&gt;16 decisões&lt;/b&gt;&lt;span&gt;5 por ciclo (a Fase 3 tem duas); 6 no alerta de segurança, por causa do incidente de rede&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;rcard&quot;&gt;&lt;b&gt;1 título&lt;/b&gt;&lt;span&gt;Seu XP final define o título que você recebe&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;p&gt;O ponto central: &lt;b&gt;a decisão de um ciclo volta para a Fase 1&lt;/b&gt; e muda o ponto de partida do próximo. É a retroalimentação que o artigo descreve.&lt;/p&gt;
+        &lt;p class=&quot;rnote&quot;&gt;Dados emulados, simulação educativa. Os números do jogo não representam reservatórios reais.&lt;/p&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;rpane&quot; id=&quot;r2&quot; role=&quot;tabpanel&quot; hidden&gt;
+        &lt;ul class=&quot;rlist&quot;&gt;
+          &lt;li&gt;&lt;kbd&gt;Start game&lt;/kbd&gt; começa a missão.&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Andar:&lt;/b&gt; clique (ou toque) no chão, ou use o botão &lt;kbd&gt;Ir até lá&lt;/kbd&gt;, que leva você direto à próxima estação.&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Estação ativa:&lt;/b&gt; marcada por um farol azul e uma seta amarela. Ao chegar perto, o diálogo abre sozinho.&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Fora de ordem:&lt;/b&gt; clicar em outra estação mostra um aviso, porque as fases seguem a sequência do framework.&lt;/li&gt;
+          &lt;li&gt;&lt;kbd&gt;Ampliar&lt;/kbd&gt; abre o jogo em tela cheia; &lt;kbd&gt;Esc&lt;/kbd&gt; ou &lt;kbd&gt;Fechar&lt;/kbd&gt; volta.&lt;/li&gt;
+          &lt;li&gt;&lt;kbd&gt;🔊 Som&lt;/kbd&gt; liga ou desliga o áudio. O som começa depois do Start game e pausa quando o jogo sai da tela.&lt;/li&gt;
+          &lt;li&gt;&lt;kbd&gt;Regras&lt;/kbd&gt; abre esta ajuda a qualquer momento, sem perder o progresso.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;rpane&quot; id=&quot;r3&quot; role=&quot;tabpanel&quot; hidden&gt;
+        &lt;div class=&quot;rstep&quot;&gt;&lt;span class=&quot;rn&quot;&gt;1&lt;/span&gt;&lt;div&gt;&lt;b&gt;Sala de Normas&lt;/b&gt; · Dona Norma (CONERH)&lt;p&gt;Defina o nível de volume em que o reservatório entra em alerta: &lt;b&gt;40%&lt;/b&gt; (prudente), &lt;b&gt;30%&lt;/b&gt; (equilibrada) ou &lt;b&gt;20%&lt;/b&gt; (arriscada). Essa meta vira a linha vermelha do gráfico da Fase 3.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;rstep&quot;&gt;&lt;span class=&quot;rn&quot;&gt;2&lt;/span&gt;&lt;div&gt;&lt;b&gt;Torre de Sensores&lt;/b&gt; · Téo da Telemetria&lt;p&gt;Oito leituras mensais chegam; algumas são erro de sensor. Clique nas que devem ser descartadas e confira. No ciclo de &lt;b&gt;alerta de segurança&lt;/b&gt;, você também decide o que fazer com um tráfego estranho na rede de campo.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;rstep&quot;&gt;&lt;span class=&quot;rn&quot;&gt;3&lt;/span&gt;&lt;div&gt;&lt;b&gt;Laboratório de Modelos&lt;/b&gt; · Dra. Modelo&lt;p&gt;Escolha a abordagem de previsão (modelo físico, IA ou os dois) e depois leia o gráfico: em quantos meses a previsão central cruza a referência. A faixa azul é a incerteza.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;rstep&quot;&gt;&lt;span class=&quot;rn&quot;&gt;4&lt;/span&gt;&lt;div&gt;&lt;b&gt;Sala de Controle&lt;/b&gt; · Diretoria&lt;p&gt;Tome a decisão operacional do ciclo. Ela altera Volume, Dados e Segurança e volta para a Fase 1 do próximo ciclo.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;rpane&quot; id=&quot;r4&quot; role=&quot;tabpanel&quot; hidden&gt;
+        &lt;div class=&quot;rgrid&quot;&gt;
+          &lt;div class=&quot;rcard&quot;&gt;&lt;b&gt;☀️ Seca severa&lt;/b&gt;&lt;span&gt;Céu âmbar e solo seco. O volume tende a cair: a referência é o seu nível de alerta.&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;rcard&quot;&gt;&lt;b&gt;🛡️ Alerta de segurança&lt;/b&gt;&lt;span&gt;A Torre de Sensores pisca em vermelho. Há um incidente de rede para tratar na Fase 2.&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;rcard&quot;&gt;&lt;b&gt;🌧️ Cheia&lt;/b&gt;&lt;span&gt;Chuva no mapa. O volume tende a subir: a referência passa a ser 95% da capacidade.&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;p&gt;O lago no centro do mapa encolhe ou cresce com o &lt;b&gt;Volume&lt;/b&gt;. Ao fim de cada ciclo aparece um resumo com a variação dos indicadores.&lt;/p&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;rpane&quot; id=&quot;r5&quot; role=&quot;tabpanel&quot; hidden&gt;
+        &lt;p&gt;&lt;b&gt;Indicadores&lt;/b&gt; (painel no alto do jogo). Começam em Volume 62%, Dados 70% e Segurança 70%; a barra fica vermelha abaixo de 35%.&lt;/p&gt;
+        &lt;div class=&quot;rtw&quot;&gt;&lt;table class=&quot;rtab&quot;&gt;
+          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Fase&lt;/th&gt;&lt;th&gt;O que rende XP&lt;/th&gt;&lt;th&gt;Máx.&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;&lt;td&gt;1 · Normas&lt;/td&gt;&lt;td&gt;Meta prudente ou equilibrada: 12 XP; arriscada: 5 XP&lt;/td&gt;&lt;td&gt;12&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;2 · Sensores&lt;/td&gt;&lt;td&gt;+10 XP por erro descartado; −5 por leitura boa descartada (mínimo 0). No alerta de segurança, a resposta ao incidente vale até +15&lt;/td&gt;&lt;td&gt;20 a 45&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;3 · Modelos&lt;/td&gt;&lt;td&gt;Abordagem: até 15 XP. Leitura correta do gráfico: 15 XP (erro: 3)&lt;/td&gt;&lt;td&gt;30&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;4 · Controle&lt;/td&gt;&lt;td&gt;Decisão motivada: 30 XP; as demais rendem de 0 a 10&lt;/td&gt;&lt;td&gt;30&lt;/td&gt;&lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;&lt;/div&gt;
+        &lt;p&gt;&lt;b&gt;Máximo possível: 301 XP&lt;/b&gt; nos três ciclos.&lt;/p&gt;
+        &lt;div class=&quot;rgrid&quot;&gt;
+          &lt;div class=&quot;rcard rank&quot;&gt;&lt;b&gt;Mestre das Águas&lt;/b&gt;&lt;span&gt;220 XP ou mais&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;rcard rank&quot;&gt;&lt;b&gt;Operador(a) Pleno(a)&lt;/b&gt;&lt;span&gt;de 150 a 219 XP&lt;/span&gt;&lt;/div&gt;
+          &lt;div class=&quot;rcard rank&quot;&gt;&lt;b&gt;Aprendiz&lt;/b&gt;&lt;span&gt;abaixo de 150 XP: jogue de novo&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;p class=&quot;rnote&quot;&gt;Sons de retorno: arpejo ascendente quando a escolha rende bem; tom descendente quando Segurança ou Dados caem.&lt;/p&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;rpane&quot; id=&quot;r6&quot; role=&quot;tabpanel&quot; hidden&gt;
+        &lt;ul class=&quot;rlist&quot;&gt;
+          &lt;li&gt;&lt;b&gt;Dado ruim vira previsão ruim.&lt;/b&gt; Na Torre de Sensores, procure valores que destoam da sequência (saltos bruscos, zeros, 100%).&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Descarte só o necessário.&lt;/b&gt; Jogar fora leitura boa também custa Dados.&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Físico + IA.&lt;/b&gt; O artigo defende a complementaridade: um dá a base, o outro a velocidade.&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Incidente de rede:&lt;/b&gt; isolar a parte afetada costuma ser melhor do que ignorar ou desligar tudo.&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Na Diretoria&lt;/b&gt;, prefira decisões graduais e justificáveis a reações extremas.&lt;/li&gt;
+          &lt;li&gt;&lt;b&gt;Olhe o resumo do ciclo:&lt;/b&gt; ele mostra como sua decisão mudou o ponto de partida seguinte.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;rpane&quot; id=&quot;r7&quot; role=&quot;tabpanel&quot; hidden&gt;
+        &lt;p class=&quot;rlead&quot;&gt;O jogo é uma versão lúdica do framework do artigo &lt;b&gt;“Inteligência Hídrica na Era Digital: O Papel das TIC e dos Sistemas de Apoio à Decisão na Governança de Recursos Hídricos”&lt;/b&gt;.&lt;/p&gt;
+        &lt;p class=&quot;rauth&quot;&gt;Carla Fabiana Mont-Morency Rosado Vieira · Sosthenis de Lima Timoteo · Ana Christine de Araújo Campos Koelfa (Cogerh)&lt;/p&gt;
+        &lt;div class=&quot;rmap&quot;&gt;
+          &lt;div&gt;&lt;b&gt;Fase 1&lt;/b&gt;&lt;span&gt;Alinhamento regulatório (CONERH, outorga)&lt;/span&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;b&gt;Fase 2&lt;/b&gt;&lt;span&gt;Ingestão de dados por IoT e telemetria&lt;/span&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;b&gt;Fase 3&lt;/b&gt;&lt;span&gt;Camada analítica: modelos físicos + IA&lt;/span&gt;&lt;/div&gt;
+          &lt;div&gt;&lt;b&gt;Fase 4&lt;/b&gt;&lt;span&gt;Governança e proteção de OT (NIST SP 800-82r3)&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;p&gt;Quem quiser se aprofundar encontra no artigo o referencial teórico, o Quadro 1 com as quatro fases, o contraste entre Singapura (Marina Barrage) e a transferência interior–RMF no Ceará, e a cadeia da outorga até o Sistema Outorga Online.&lt;/p&gt;
+        &lt;div class=&quot;rcta&quot;&gt;&lt;a class=&quot;rbtn pri&quot; id=&quot;rart&quot; href=&quot;https://appcomai.github.io/inteligencia-hidrica-tic/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Ler o artigo completo&lt;/a&gt;&lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;rfoot&quot;&gt;&lt;span&gt;Dados emulados · uso educativo&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;rbtn pri&quot; id=&quot;rplay&quot;&gt;Entendi, jogar&lt;/button&gt;&lt;/div&gt;
+  &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;div class=&quot;modal&quot; id=&quot;help&quot; hidden role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-labelledby=&quot;helpt&quot;&gt;
@@ -607,6 +747,24 @@ details p{margin:6px 0 2px;color:var(--muted)}
   var gbox=$(&#x27;gamebox&#x27;), dlg=$(&#x27;dlg&#x27;), hud=$(&#x27;hud&#x27;), objEl=$(&#x27;obj&#x27;);
   function toggleFull(){ gbox.classList.toggle(&#x27;full&#x27;); $(&#x27;gfull&#x27;).textContent=gbox.classList.contains(&#x27;full&#x27;)?&#x27;Fechar&#x27;:&#x27;Ampliar&#x27;; if(window.__gresize) window.__gresize(); }
   $(&#x27;gfull&#x27;).addEventListener(&#x27;click&#x27;,toggleFull);
+  /* ================= Regras do jogo ================= */
+  var rLast=null;
+  function openRules(tab){ rLast=document.activeElement; $(&#x27;rules&#x27;).hidden=false; if(tab) rTab(tab); var s=$(&#x27;rules&#x27;).querySelector(&#x27;[aria-selected=&quot;true&quot;]&#x27;); if(s) s.focus(); }
+  function closeRules(){ $(&#x27;rules&#x27;).hidden=true; if(rLast&amp;&amp;rLast.focus) rLast.focus(); }
+  function rTab(id){ Array.prototype.forEach.call($(&#x27;rules&#x27;).querySelectorAll(&#x27;.rtabs button&#x27;),function(b){ var on=b.getAttribute(&#x27;data-t&#x27;)===id; b.setAttribute(&#x27;aria-selected&#x27;,on?&#x27;true&#x27;:&#x27;false&#x27;); b.tabIndex=on?0:-1; if(on) b.scrollIntoView({block:&#x27;nearest&#x27;,inline:&#x27;nearest&#x27;}); });
+    Array.prototype.forEach.call($(&#x27;rules&#x27;).querySelectorAll(&#x27;.rpane&#x27;),function(p){ p.hidden=(p.id!==id); }); $(&#x27;rules&#x27;).querySelector(&#x27;.rbody&#x27;).scrollTop=0; }
+  $(&#x27;rules&#x27;).querySelector(&#x27;.rtabs&#x27;).addEventListener(&#x27;click&#x27;,function(e){ var b=e.target.closest(&#x27;button&#x27;); if(b){ rTab(b.getAttribute(&#x27;data-t&#x27;)); b.focus(); } });
+  $(&#x27;rules&#x27;).querySelector(&#x27;.rtabs&#x27;).addEventListener(&#x27;keydown&#x27;,function(e){ if(e.key!==&#x27;ArrowRight&#x27;&amp;&amp;e.key!==&#x27;ArrowLeft&#x27;) return; var bs=[].slice.call(this.querySelectorAll(&#x27;button&#x27;)), i=bs.indexOf(document.activeElement); if(i&lt;0) return; e.preventDefault(); var n=bs[(i+(e.key===&#x27;ArrowRight&#x27;?1:bs.length-1))%bs.length]; rTab(n.getAttribute(&#x27;data-t&#x27;)); n.focus(); });
+  $(&#x27;rclose&#x27;).addEventListener(&#x27;click&#x27;,closeRules);
+  $(&#x27;rplay&#x27;).addEventListener(&#x27;click&#x27;,function(){ closeRules(); var s=$(&#x27;startg&#x27;); if(s&amp;&amp;!$(&#x27;dlg&#x27;).hidden) s.click(); });
+  $(&#x27;rules&#x27;).addEventListener(&#x27;click&#x27;,function(e){ if(e.target===this) closeRules(); });
+  document.addEventListener(&#x27;keydown&#x27;,function(e){ if(e.key===&#x27;Escape&#x27;&amp;&amp;!$(&#x27;rules&#x27;).hidden){ e.stopImmediatePropagation(); closeRules(); } },true);
+  $(&#x27;rart&#x27;).addEventListener(&#x27;click&#x27;,function(e){
+    try{ if(window.parent&amp;&amp;window.parent!==window){ if(window.parent.document.querySelector(&#x27;header&#x27;)){ e.preventDefault(); closeRules(); window.parent.scrollTo({top:0,behavior:&#x27;smooth&#x27;}); } } }catch(err){}
+  });
+  $(&#x27;grules&#x27;).addEventListener(&#x27;click&#x27;,function(){ openRules(); });
+  window.__openRules=openRules;
+
   /* ================= SOM (Web Audio, sintetizado, sem arquivos) ================= */
   var SFX=(function(){
     var AC=window.AudioContext||window.webkitAudioContext, ctx=null, master, mus, fx, noiseBuf, rainSrc=null, rainG=null;
@@ -804,7 +962,8 @@ details p{margin:6px 0 2px;color:var(--muted)}
   /* ---- fluxo do jogo ---- */
   function intro(){
     G.mode=&#x27;idle&#x27;; hud.hidden=true; objEl.hidden=true;
-    panel(&#x27;&lt;h3&gt;Missão no reservatório&lt;/h3&gt;&lt;p&gt;Você é o operador do sistema. Ande pelo mapa (clique no chão ou use o botão &quot;Ir até lá&quot;), visite as &lt;b&gt;quatro estações na ordem&lt;/b&gt; e tome as decisões de cada fase.&lt;/p&gt;&lt;p&gt;São três ciclos: seca, alerta de segurança e cheia. A decisão de um ciclo muda o ponto de partida do próximo, como no framework do artigo.&lt;/p&gt;&lt;p class=&quot;note&quot;&gt;Obs.: dados emulados, simulação educativa.&lt;/p&gt;&lt;div class=&quot;chs&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;pri&quot; id=&quot;startg&quot;&gt;Start game&lt;/button&gt;&lt;/div&gt;&#x27;,true);
+    panel(&#x27;&lt;h3&gt;Missão no reservatório&lt;/h3&gt;&lt;p&gt;Você é o operador do sistema. Ande pelo mapa (clique no chão ou use o botão &quot;Ir até lá&quot;), visite as &lt;b&gt;quatro estações na ordem&lt;/b&gt; e tome as decisões de cada fase.&lt;/p&gt;&lt;p&gt;São três ciclos: seca, alerta de segurança e cheia. A decisão de um ciclo muda o ponto de partida do próximo, como no framework do artigo.&lt;/p&gt;&lt;p class=&quot;note&quot;&gt;Obs.: dados emulados, simulação educativa.&lt;/p&gt;&lt;div class=&quot;chs&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;pri&quot; id=&quot;startg&quot;&gt;Start game&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;rulesg&quot;&gt;❔ Regras do jogo&lt;/button&gt;&lt;/div&gt;&#x27;,true);
+    $(&#x27;rulesg&#x27;).addEventListener(&#x27;click&#x27;,function(){ openRules(); });
     $(&#x27;startg&#x27;).addEventListener(&#x27;click&#x27;,startGame);
   }
   function startGame(){
@@ -925,7 +1084,7 @@ details p{margin:6px 0 2px;color:var(--muted)}
     var sum=&#x27;&lt;div class=&quot;sum&quot;&gt;&lt;span&gt;Volume: &#x27;+G.vol+&#x27;% (&#x27;+dv(s.vol,G.vol)+&#x27;)&lt;/span&gt;&lt;span&gt;Dados: &#x27;+G.conf+&#x27;% (&#x27;+dv(s.conf,G.conf)+&#x27;)&lt;/span&gt;&lt;span&gt;Segurança: &#x27;+G.seg+&#x27;% (&#x27;+dv(s.seg,G.seg)+&#x27;)&lt;/span&gt;&lt;span&gt;XP: &#x27;+G.xp+&#x27; (+&#x27;+(G.xp-s.xp)+&#x27;)&lt;/span&gt;&lt;/div&gt;&#x27;;
     if(!last){ panel(&#x27;&lt;h3&gt;Ciclo &#x27;+(G.cycle+1)+&#x27; concluído&lt;/h3&gt;&#x27;+sum+&#x27;&lt;p&gt;Agora o framework fecha o ciclo: a decisão volta para a &lt;b&gt;Fase 1&lt;/b&gt; e o próximo cenário começa de onde este terminou.&lt;/p&gt;&#x27;+cont(&#x27;Próximo ciclo&#x27;,function(){ G.cycle++; startCycle(); })); }
     else { var rank=G.xp&gt;=220?&#x27;Mestre das Águas&#x27;:(G.xp&gt;=150?&#x27;Operador(a) Pleno(a)&#x27;:&#x27;Aprendiz: jogue de novo&#x27;);
-      panel(&#x27;&lt;h3&gt;Fim da missão&lt;/h3&gt;&#x27;+sum+&#x27;&lt;p&gt;Seu título: &lt;b&gt;&#x27;+rank+&#x27;&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Você passou pelas quatro fases três vezes e viu a decisão voltar ao começo a cada vez. É esse ciclo que o artigo defende.&lt;/p&gt;&lt;p class=&quot;note&quot;&gt;Obs.: dados emulados, simulação educativa.&lt;/p&gt;&#x27;+cont(&#x27;Jogar de novo&#x27;,function(){ startGame(); })); }
+      panel(&#x27;&lt;h3&gt;Fim da missão&lt;/h3&gt;&#x27;+sum+&#x27;&lt;p&gt;Seu título: &lt;b&gt;&#x27;+rank+&#x27;&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Você passou pelas quatro fases três vezes e viu a decisão voltar ao começo a cada vez. É esse ciclo que o artigo defende.&lt;/p&gt;&lt;p&gt;Quer entender o framework por trás do jogo? &lt;button type=&quot;button&quot; class=&quot;rlink&quot; id=&quot;rart2&quot;&gt;Leia o artigo&lt;/button&gt;.&lt;/p&gt;&lt;p class=&quot;note&quot;&gt;Obs.: dados emulados, simulação educativa.&lt;/p&gt;&#x27;+cont(&#x27;Jogar de novo&#x27;,function(){ startGame(); })); $(&#x27;rart2&#x27;).addEventListener(&#x27;click&#x27;,function(){ openRules(&#x27;r7&#x27;); }); }
   }
 
   /* ---- movimento e clique ---- */
