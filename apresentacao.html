@@ -147,10 +147,6 @@ h2{font-size:clamp(24px,3.4vw,40px);line-height:1.1;margin:0;font-weight:700;tex
 .bubble .cur{display:inline-block;width:7px;height:15px;background:#1f6fb5;vertical-align:-2px;margin-left:2px;animation:bl 1s steps(1) infinite}
 @keyframes bl{50%{opacity:0}}
 .bubble .x{pointer-events:auto;cursor:pointer;float:right;border:0;background:none;color:#1f6fb5;font-size:12px;padding:0 0 0 8px}
-/* notas */
-#notes{position:fixed;right:16px;top:56px;z-index:40;width:min(380px,calc(100vw - 32px));max-height:60vh;overflow:auto;background:rgba(6,24,42,.95);border:1px solid var(--sun);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5;box-shadow:0 20px 50px rgba(0,0,0,.5)}
-#notes h4{margin:0 0 6px;font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sun)}
-#notes ul{margin:0;padding-left:1.1em}
 /* início */
 #start{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(10,37,64,.75),rgba(6,24,42,.96));backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity .6s}
 #start.go{opacity:0;pointer-events:none}
@@ -190,7 +186,6 @@ kbd{font:500 12px var(--mono);border:1px solid var(--line);border-bottom-width:2
   <span class="count" id="count">1 / 5</span>
   <button class="tbtn" id="bMusic" aria-pressed="true" title="Música (M)">♪</button>
   <button class="tbtn" id="bVoice" aria-pressed="true" title="Voz gravada do Severino (V)">🗣</button>
-  <button class="tbtn" id="bNotes" aria-pressed="false" title="Notas do apresentador (N)">N</button>
   <button class="tbtn" id="bFull" title="Tela cheia (F)">⛶</button>
 </header>
 
@@ -317,14 +312,13 @@ kbd{font:500 12px var(--mono);border:1px solid var(--line);border-bottom-width:2
 
 <div class="sev" id="sev"><canvas id="sevc" title="Severino: clique para repetir a fala"></canvas><div class="bubble hide" id="bubble" aria-live="polite"><button class="x" id="bx" aria-label="Silenciar fala">■ parar</button><b>Severino</b><span id="btxt"></span><span class="cur"></span></div></div>
 
-<aside id="notes" hidden><h4>Notas do apresentador</h4><div id="ntxt"></div></aside>
 
 <div id="start" role="dialog" aria-modal="true" aria-labelledby="sth"><div class="st">
  <div class="kick">Apresentação interativa</div>
  <h2 id="sth">Inteligência Hídrica na Era Digital</h2>
  <p>Resumo do artigo, o framework funcionando ao vivo e o jogo em ação, com o Severino narrando. Use o som ligado.</p>
  <button class="btn" id="go" type="button">▶ Começar</button>
- <small>Navegue com <kbd>←</kbd> <kbd>→</kbd> ou deslizando · <kbd>N</kbd> notas · <kbd>F</kbd> tela cheia · <kbd>M</kbd> música · <kbd>V</kbd> voz</small>
+ <small>Navegue com <kbd>←</kbd> <kbd>→</kbd> ou deslizando · <kbd>F</kbd> tela cheia · <kbd>M</kbd> música · <kbd>V</kbd> voz</small>
 </div></div>
 
 <script>console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation' );
@@ -352,13 +346,6 @@ var TALK=[
  'Este é o framework funcionando de verdade. O sinal sai das normas, passa pelos sensores, chega aos modelos e vira decisão, que volta para o começo. A proteção da operação cobre todas as fases. Experimente trocar o cenário, ou clique no tour guiado.',
  'Agora o jogo. Você é o operador e passa pelas quatro estações em três crises: seca, alerta de segurança e cheia. Posso jogar uma demonstração para vocês, ou alguém da plateia assume o controle.',
  'Para fechar: a tecnologia cumpre seu papel quando liga a medição rigorosa em campo à decisão responsável. Ficam como limites a telecomunicação de campo e a calibração dos modelos diante das mudanças climáticas. O artigo, o DOI e a simulação estão nos links. E, se quiser continuar a conversa, fale comigo no ChatGPT. Obrigado!'
-];
-var NOTES=[
- ['Apresente título e autores (Cogerh).','Problema → objetivo → método → tese, nessa ordem.','Reforce: a tese é proposta para validação empírica futura.'],
- ['Referencial: vire os 4 cartões (2.1 a 2.4).','Singapura × Ceará: percorra as 5 dimensões do Quadro 2.','Cadeia da outorga: anime a cadeia; destaque o teto de no mínimo 10 anos e a alocação negociada.'],
- ['Mostre o sinal percorrendo as fases e a retroalimentação 4 → 1.','Troque para Seca e Alerta de segurança: veja a leitura e a proteção de OT mudarem.','Lembre: dados emulados, uso educativo.'],
- ['Use a demonstração automática ou chame alguém da plateia.','Comente cada estação: metas (1), dados (2), previsão (3), decisão (4).','A decisão de um ciclo muda o ponto de partida do próximo.'],
- ['Feche com a frase da tecnologia como elo.','Limitações e próximos passos.','Mostre o QR code e o Severino no ChatGPT (requer login).']
 ];
 var TOUR=[
  ['normal','Operação normal: as metas se mantêm, os dados chegam completos e a decisão é manter a divisão da água.'],
@@ -451,8 +438,7 @@ var lastBg=performance.now(); (function lb(n){ requestAnimationFrame(lb); var dt
 
 /* ============ navegação e transições ============ */
 var dots=$('dots'); slides.forEach(function(s,i){ var b=document.createElement('button'); b.setAttribute('aria-label','Ir para o slide '+(i+1)); b.addEventListener('click',function(e){ go(i,e); }); dots.appendChild(b); });
-function paintNav(){ [].forEach.call(dots.children,function(b,i){ b.setAttribute('aria-current',i===cur?'true':'false'); }); $('count').textContent=(cur+1)+' / '+slides.length; $('progress').style.width=((cur+1)/slides.length*100)+'%';
-  $('ntxt').innerHTML='<ul>'+NOTES[cur].map(function(n){return '<li>'+n+'</li>'}).join('')+'</ul>'; }
+function paintNav(){ [].forEach.call(dots.children,function(b,i){ b.setAttribute('aria-current',i===cur?'true':'false'); }); $('count').textContent=(cur+1)+' / '+slides.length; $('progress').style.width=((cur+1)/slides.length*100)+'%'; }
 function go(i,e){ if(busy||i===cur||i<0||i>=slides.length) return; busy=true;
   var x=e&&e.clientX!=null?e.clientX:innerWidth*(i>cur?.82:.18), y=e&&e.clientY!=null?e.clientY:innerHeight*.5;
   var out=slides[cur], inn=slides[i]; inn.style.setProperty('--rx',x+'px'); inn.style.setProperty('--ry',y+'px');
@@ -467,11 +453,9 @@ addEventListener('keydown',function(e){ if(e.target&&/INPUT|TEXTAREA/.test(e.tar
   if(!$('start').hidden&&!$('start').classList.contains('go')){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('go').click(); } return; }
   if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); go(cur+1); }
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
-  else if(e.key==='n'||e.key==='N') toggleNotes(); else if(e.key==='f'||e.key==='F') full(); else if(e.key==='m'||e.key==='M') $('bMusic').click(); else if(e.key==='v'||e.key==='V') $('bVoice').click(); });
+  else if(e.key==='f'||e.key==='F') full(); else if(e.key==='m'||e.key==='M') $('bMusic').click(); else if(e.key==='v'||e.key==='V') $('bVoice').click(); });
 var tx0=null; addEventListener('touchstart',function(e){ tx0=e.touches[0].clientX; },{passive:true});
 addEventListener('touchend',function(e){ if(tx0==null) return; var dx=e.changedTouches[0].clientX-tx0; if(Math.abs(dx)>70&&!e.target.closest('.frame')) go(cur+(dx<0?1:-1)); tx0=null; },{passive:true});
-function toggleNotes(){ var n=$('notes'); n.hidden=!n.hidden; $('bNotes').setAttribute('aria-pressed',n.hidden?'false':'true'); }
-$('bNotes').addEventListener('click',toggleNotes);
 function full(){ try{ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }catch(e){} }
 $('bFull').addEventListener('click',full);
 $('bMusic').addEventListener('click',function(){ musicOn=!musicOn; this.setAttribute('aria-pressed',musicOn?'true':'false'); setMusicLevel(); var S=gameSFX(); if(S&&S.isOn()!==musicOn) S.toggle(); var S3=flowSFX(); if(S3&&S3.isOn()!==musicOn) S3.toggle(); });
