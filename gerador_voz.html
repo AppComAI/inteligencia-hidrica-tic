@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gerador de Voz do Severino</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--bg:#06182a;--card:#0c2842;--fg:#eaf3fb;--muted:#9db4c9;--line:rgba(157,180,201,.25);--aqua:#4cc9f0;--ok:#58d68d;--warn:#ffb703;--err:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;padding:24px 16px 60px}
+.w{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{margin:0;font-size:clamp(22px,3vw,30px)}
+.sub{color:var(--muted);margin:2px 0 0}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+ol.steps{margin:0;padding-left:1.2em}ol.steps li{margin:4px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button,select{font:inherit;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--fg);padding:8px 14px;cursor:pointer}
+button.pri{background:var(--aqua);border-color:var(--aqua);color:#04223a;font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+select{border-radius:8px;background:#0a2036}
+.bar{height:8px;border-radius:99px;background:rgba(157,180,201,.2);overflow:hidden;flex:1;min-width:160px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ec4b6,var(--aqua));transition:width .3s}
+#st{font-size:14px;color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+td,th{border-bottom:1px solid var(--line);padding:10px 6px;vertical-align:top;text-align:left}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.id{font:500 12.5px ui-monospace,Menlo,monospace;color:var(--aqua);white-space:nowrap}
+td.leg{font-size:13px;color:var(--muted);max-width:280px}
+textarea{width:100%;min-height:64px;background:#0a2036;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:14px;resize:vertical}
+td.act{white-space:nowrap}
+.s{font-size:12.5px;display:block;margin-top:4px}
+.s.ok{color:var(--ok)}.s.run{color:var(--warn)}.s.err{color:var(--err)}
+audio{width:200px;height:32px;margin-top:6px;display:block}
+.note{font-size:13px;color:var(--muted)}
+@media (max-width:760px){td.leg{display:none}th.leg{display:none}audio{width:150px}}
+</style>
+</head>
+<body>
+<div class="w">
+ <div><h1>Gerador de voz do Severino</h1><p class="sub">Gera as falas da apresentação com uma voz neural brasileira, no seu próprio navegador. Nada é enviado para servidor.</p></div>
+ <div class="box"><b>Como usar</b>
+  <ol class="steps">
+   <li>Clique em <b>1. Preparar a voz</b>. Na primeira vez ele baixa a voz (cerca de 63 MB) e guarda no navegador.</li>
+   <li>Clique em <b>2. Gerar todas</b> e ouça. Se alguma palavra sair estranha, ajuste o “texto falado” (só a pronúncia; a legenda não muda) e clique em <b>Gerar</b> naquela linha.</li>
+   <li>Clique em <b>3. Baixar tudo (.zip)</b> e me envie o arquivo.</li>
+  </ol>
+  <p class="note" style="margin:8px 0 0">Use Chrome ou Edge no computador. A voz é sintética (Piper, licença livre): bem melhor que a do navegador, mas não é um locutor humano.</p>
+ </div>
+ <div class="box row">
+  <label>Voz <select id="voice"><option value="pt_BR-faber-medium" selected>Faber · masculina · média qualidade (recomendada)</option><option value="pt_BR-edresson-low">Edresson · masculina · baixa qualidade (mais leve)</option></select></label>
+  <button class="pri" id="prep">1. Preparar a voz</button>
+  <button id="all" disabled>2. Gerar todas</button>
+  <button id="zip" disabled>3. Baixar tudo (.zip)</button>
+  <div class="bar"><i id="pb"></i></div>
+  <span id="st">Pronto para começar.</span>
+ </div>
+ <div class="box" style="overflow:auto"><table><thead><tr><th>Fala</th><th class="leg">Legenda (fica igual)</th><th>Texto falado (pronúncia)</th><th>Áudio</th></tr></thead><tbody id="tb"></tbody></table></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script type="module">
+const ROWS=[{"id": "slide1", "legenda": "Olá! Eu sou o Severino. Este artigo mostra como as Tecnologias da Informação e Comunicação transformam dados hidrológicos brutos em decisões. O problema: gestores e comitês precisam decidir rápido, com dados que envelhecem depressa. A proposta é um framework de apoio à decisão em quatro fases, com o Ceará como referência. A tese ainda será validada em estudos futuros.", "falado": "Olá! Eu sou o Severino. Este artigo mostra como as Tecnologias da Informação e Comunicação transformam dados hidrológicos brutos em decisões. O problema: gestores e comitês precisam decidir rápido, com dados que envelhecem depressa. A proposta é um fréimuórk de apoio à decisão em quatro fases, com o Ceará como referência. A tese ainda será validada em estudos futuros."}, {"id": "slide2", "legenda": "Aqui estão as partes principais. Primeiro, o referencial teórico: o ciclo da informação, as três funções do apoio à decisão, a união entre modelo físico e inteligência artificial, e a proteção da tecnologia operacional. Depois, o contraste entre Singapura e o Ceará. E, por fim, a cadeia da outorga cearense, do dado de campo ao teto outorgável. Clique nas abas e nos cartões.", "falado": "Aqui estão as partes principais. Primeiro, o referencial teórico: o ciclo da informação, as três funções do apoio à decisão, a união entre modelo físico e inteligência artificial, e a proteção da tecnologia operacional. Depois, o contraste entre Singapura e o Ceará. E, por fim, a cadeia da outorga cearense, do dado de campo ao teto outorgável. Clique nas abas e nos cartões."}, {"id": "slide3", "legenda": "Este é o framework funcionando de verdade. O sinal sai das normas, passa pelos sensores, chega aos modelos e vira decisão, que volta para o começo. A proteção da operação cobre todas as fases. Experimente trocar o cenário, ou clique no tour guiado.", "falado": "Este é o fréimuórk funcionando de verdade. O sinal sai das normas, passa pelos sensores, chega aos modelos e vira decisão, que volta para o começo. A proteção da operação cobre todas as fases. Experimente trocar o cenário, ou clique no tour guiado."}, {"id": "slide4", "legenda": "Agora o jogo. Você é o operador e passa pelas quatro estações em três crises: seca, alerta de segurança e cheia. Posso jogar uma demonstração para vocês, ou alguém da plateia assume o controle.", "falado": "Agora o jogo. Você é o operador e passa pelas quatro estações em três crises: seca, alerta de segurança e cheia. Posso jogar uma demonstração para vocês, ou alguém da plateia assume o controle."}, {"id": "slide5", "legenda": "Para fechar: a tecnologia cumpre seu papel quando liga a medição rigorosa em campo à decisão responsável. Ficam como limites a telecomunicação de campo e a calibração dos modelos diante das mudanças climáticas. O artigo, o DOI e a simulação estão nos links. E, se quiser continuar a conversa, fale comigo no ChatGPT. Obrigado!", "falado": "Para fechar: a tecnologia cumpre seu papel quando liga a medição rigorosa em campo à decisão responsável. Ficam como limites a telecomunicação de campo e a calibração dos modelos diante das mudanças climáticas. O artigo, o DOI e a simulação estão nos links. E, se quiser continuar a conversa, fale comigo no tchét gê pê tê. Obrigado!"}, {"id": "aba_pB", "legenda": "Singapura automatiza a foz dos rios na própria cidade; o Ceará leva a água do interior até a Região Metropolitana. Percorra as dimensões ao lado.", "falado": "Singapura automatiza a foz dos rios na própria cidade; o Ceará leva a água do interior até a Região Metropolitana. Percorra as dimensões ao lado."}, {"id": "aba_pC", "legenda": "A cadeia da outorga: monitorar, calcular a vazão regularizada, homologar o teto no Conerh e operar no Sistema Outorga Online.", "falado": "A cadeia da outorga: monitorar, calcular a vazão regularizada, homologar o teto no Conér e operar no Sistema Outorga Online."}, {"id": "aba_pA", "legenda": "Vire os cartões para ver os quatro pilares do referencial teórico.", "falado": "Vire os cartões para ver os quatro pilares do referencial teórico."}, {"id": "tour_normal", "legenda": "Operação normal: as metas se mantêm, os dados chegam completos e a decisão é manter a divisão da água.", "falado": "Operação normal: as metas se mantêm, os dados chegam completos e a decisão é manter a divisão da água."}, {"id": "tour_seca", "legenda": "Seca severa: o volume cai, a previsão cruza o nível de alerta e a decisão passa a propor cortes graduais.", "falado": "Seca severa: o volume cai, a previsão cruza o nível de alerta e a decisão passa a propor cortes graduais."}, {"id": "tour_cheia", "legenda": "Cheia: o volume sobe, e o framework antecipa a necessidade de abrir espaço no reservatório com segurança.", "falado": "Cheia: o volume sobe, e o fréimuórk antecipa a necessidade de abrir espaço no reservatório com segurança."}, {"id": "tour_ataque", "legenda": "Alerta de segurança: tráfego estranho na rede de campo. A segmentação em zonas isola a parte afetada e a operação continua.", "falado": "Alerta de segurança: tráfego estranho na rede de campo. A segmentação em zonas isola a parte afetada e a operação continua."}, {"id": "jogo_start", "legenda": "Começou a missão! Primeiro ciclo: seca severa.", "falado": "Começou a missão! Primeiro ciclo: seca severa."}, {"id": "jogo_0", "legenda": "Sala de Normas. Fase um: antes de olhar dados, combinamos as metas e o nível de alerta.", "falado": "Sala de Normas. Fase um: antes de olhar dados, combinamos as metas e o nível de alerta."}, {"id": "jogo_1", "legenda": "Torre de Sensores. Fase dois: dado ruim vira previsão ruim, então descartamos as leituras com erro.", "falado": "Torre de Sensores. Fase dois: dado ruim vira previsão ruim, então descartamos as leituras com erro."}, {"id": "jogo_2", "legenda": "Laboratório de Modelos. Fase três: modelo físico e inteligência artificial juntos, lendo a faixa de incerteza.", "falado": "Laboratório de Modelos. Fase três: modelo físico e inteligência artificial juntos, lendo a faixa de incerteza."}, {"id": "jogo_3", "legenda": "Sala de Controle. Fase quatro: a decisão precisa ser motivada, e ela volta para a fase um.", "falado": "Sala de Controle. Fase quatro: a decisão precisa ser motivada, e ela volta para a fase um."}, {"id": "jogo_cyc1", "legenda": "Segundo ciclo: alerta de segurança. Atenção à rede de campo!", "falado": "Segundo ciclo: alerta de segurança. Atenção à rede de campo!"}, {"id": "jogo_cyc2", "legenda": "Terceiro ciclo: cheia. Agora o risco é o reservatório encher demais.", "falado": "Terceiro ciclo: cheia. Agora o risco é o reservatório encher demais."}, {"id": "jogo_end", "legenda": "Fim da missão! As quatro fases, três vezes, e a decisão sempre voltando ao começo. É esse ciclo que o artigo defende.", "falado": "Fim da missão! As quatro fases, três vezes, e a decisão sempre voltando ao começo. É esse ciclo que o artigo defende."}, {"id": "jogo_suavez", "legenda": "Agora é com você! Clique no chão ou use o botão Ir até lá, e visite as estações na ordem.", "falado": "Agora é com você! Clique no chão ou use o botão \"Ir até lá\", e visite as estações na ordem."}];
+const $=id=>document.getElementById(id);
+let tts=null, ready=false; const out={};
+const tb=$('tb');
+ROWS.forEach((r,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td class="id">${r.id}</td><td class="leg"></td><td><textarea data-i="${i}"></textarea></td><td class="act"><button data-g="${i}" disabled>Gerar</button><span class="s" id="s${i}">—</span><span id="a${i}"></span></td>`;
+  tr.querySelector('.leg').textContent=r.legenda; tr.querySelector('textarea').value=r.falado; tb.appendChild(tr); });
+tb.addEventListener('click',e=>{ const b=e.target.closest('button[data-g]'); if(b) gen(+b.dataset.g,true); });
+tb.addEventListener('input',e=>{ const t=e.target.closest('textarea'); if(t){ ROWS[+t.dataset.i].falado=t.value; const s=$('s'+t.dataset.i); if(out[ROWS[+t.dataset.i].id]){ s.textContent='texto mudou: gere de novo'; s.className='s run'; } } });
+function st(t,p){ $('st').textContent=t; if(p!=null) $('pb').style.width=Math.round(p*100)+'%'; }
+async function lib(){ if(tts) return tts; st('Carregando o motor de voz…',0.02); const SRC=['https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web@1.0.3/+esm','https://esm.sh/@diffusionstudio/vits-web@1.0.3']; let last;
+  for(const u of SRC){ try{ tts=await import(u); return tts; }catch(e){ last=e; console.warn('falhou',u,e); } } throw last; }
+$('prep').onclick=async()=>{ $('prep').disabled=true; try{ await lib(); const v=$('voice').value;
+  await tts.download(v,p=>{ if(p.total) st('Baixando a voz: '+Math.round(p.loaded/1e6)+' de '+Math.round(p.total/1e6)+' MB',p.loaded/p.total); });
+  st('Testando…',1); await tts.predict({text:'Olá, eu sou o Severino.',voiceId:v});
+  ready=true; st('Voz pronta. Gere as falas.',1); $('all').disabled=false; document.querySelectorAll('button[data-g]').forEach(b=>b.disabled=false);
+ }catch(err){ console.error(err); st('Erro ao preparar a voz: '+(err&&err.message||err)+'. Verifique a internet e tente no Chrome/Edge.',0); $('prep').disabled=false; } };
+async function gen(i,play){ if(!ready) return; const r=ROWS[i], s=$('s'+i); s.textContent='gerando…'; s.className='s run';
+  try{ const wav=await tts.predict({text:r.falado,voiceId:$('voice').value}); out[r.id]=wav; const a=document.createElement('audio'); a.controls=true; a.src=URL.createObjectURL(wav);
+    const box=$('a'+i); box.innerHTML=''; box.appendChild(a); s.textContent='ok · '+Math.round(wav.size/1024)+' KB'; s.className='s ok'; if(play) a.play().catch(()=>{});
+    $('zip').disabled=Object.keys(out).length===0; }
+  catch(err){ console.error(err); s.textContent='erro: '+(err&&err.message||err); s.className='s err'; } }
+$('all').onclick=async()=>{ $('all').disabled=true; for(let i=0;i<ROWS.length;i++){ st('Gerando '+(i+1)+' de '+ROWS.length+'…',(i)/ROWS.length); await gen(i,false); } st('Todas geradas. Ouça e baixe o zip.',1); $('all').disabled=false; };
+$('zip').onclick=async()=>{ const z=new JSZip(); const f=z.folder('severino_voz'); for(const r of ROWS){ if(out[r.id]) f.file(r.id+'.wav',out[r.id]); }
+  f.file('falas.json',JSON.stringify(ROWS.map(r=>({id:r.id,legenda:r.legenda,falado:r.falado,gerado:!!out[r.id]})),null,1)); f.file('voz.txt','Voz: '+$('voice').value+' (Piper, via @diffusionstudio/vits-web)\n');
+  const blob=await z.generateAsync({type:'blob'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='severino_voz.zip'; a.click(); };
+</script>
+</body>
+</html>
